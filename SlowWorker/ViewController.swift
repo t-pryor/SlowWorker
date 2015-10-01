@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     
     @IBOutlet var startButton: UIButton!
     @IBOutlet var resultsTextView: UITextView!
+    @IBOutlet var spinner: UIActivityIndicatorView!
     
     func fetchSomethingFromServer() -> String {
         NSThread.sleepForTimeInterval(1)
@@ -38,6 +39,8 @@ class ViewController: UIViewController {
         
         let startTime = NSDate()
         self.resultsTextView.text = ""
+        startButton.enabled = false
+        spinner.startAnimating()
         
         // grab a preexisting global queue that's always avail
         // two arg, 1st being a priority, secong unused and should always be 0
@@ -53,7 +56,6 @@ class ViewController: UIViewController {
             //Code
         })
 
-
         */
         
         // GCD takes the closure and puts it on the queue, form where it will be scheduled to
@@ -62,23 +64,52 @@ class ViewController: UIViewController {
         dispatch_async(queue) {
             let fetchedData = self.fetchSomethingFromServer()
             let processedData = self.processData(fetchedData)
-            let firstResult = self.calculateFirstResult(processedData)
-            let secondResult = self.calculateSecondResult(processedData)
-            let resultsSummary = "First: [\(firstResult)]\nSecond: [\(secondResult)]"
-           
-            // messaging any GUI object from a background thread is forbidden
-            // This passes work back to main thread
-            dispatch_async(dispatch_get_main_queue()) {
-                self.resultsTextView.text = resultsSummary
+            //let firstResult = self.calculateFirstResult(processedData)
+            //let secondResult = self.calculateSecondResult(processedData)
+            
+            
+            // each of the calculate methods returns a value that we want to grab
+            // we need to make sure that the variables firstResult and secondResult can be assigned from
+            //  the closures
+            
+            // String!: implicitly unwrap, but need to make sure both will have value when eventually read
+            // vars are read in completion closure for async group, by which time they are certain to have value
+            var firstResult: String!
+            var secondResult: String!
+            let group = dispatch_group_create()
+            
+            dispatch_group_async(group, queue) {
+                firstResult = self.calculateFirstResult(processedData)
             }
-            let endTime = NSDate()
-            // startTime defined before closure created
-            // by the time the closure is executed, doWork() has returned
-            // Swift automatically allows closure to access
-            println("Completed in \(endTime.timeIntervalSinceDate(startTime)) second")
+            
+            dispatch_group_async(group, queue) {
+                secondResult = self.calculateSecondResult(processedData)
+            }
+            
+            dispatch_group_notify(group, queue) {
+                let resultsSummary = "First: [\(firstResult)\nSecond[\(secondResult)]"
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.resultsTextView.text = resultsSummary
+                    self.startButton.enabled = true
+                    self.spinner.stopAnimating()
+                }
+                
+                // messaging any GUI object from a background thread is forbidden
+                // This passes work back to main thread
+                
+                let endTime = NSDate()
+                // startTime defined before closure created
+                // by the time the closure is executed, doWork() has returned
+                // Swift automatically allows closure to access
+                println("Completed in \(endTime.timeIntervalSinceDate(startTime)) seconds")
+            
+                
+            }
+            
         }
+    
     }
-
-
+ 
 }
 

@@ -32,11 +32,16 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="z3S-FP-63K">
+                                <rect key="frame" x="355" y="33" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="centerX" secondItem="9tl-cP-H8A" secondAttribute="centerX" id="0hQ-7K-r9S"/>
+                            <constraint firstItem="z3S-FP-63K" firstAttribute="leading" secondItem="9tl-cP-H8A" secondAttribute="trailing" constant="8" id="87E-F6-lWR"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ykv-iE-bzw" secondAttribute="bottom" constant="390" id="Pk1-6k-WeO"/>
+                            <constraint firstItem="9tl-cP-H8A" firstAttribute="centerY" secondItem="z3S-FP-63K" secondAttribute="centerY" id="czX-2N-fFc"/>
                             <constraint firstItem="ykv-iE-bzw" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="qh0-VD-b47"/>
                             <constraint firstItem="ykv-iE-bzw" firstAttribute="top" secondItem="9tl-cP-H8A" secondAttribute="bottom" constant="8" id="tFf-0l-UJj"/>
                             <constraint firstItem="ykv-iE-bzw" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="zOp-Us-XKT"/>
@@ -46,6 +51,7 @@
                     </view>
                     <connections>
                         <outlet property="resultsTextView" destination="ykv-iE-bzw" id="DCn-4w-BlJ"/>
+                        <outlet property="spinner" destination="z3S-FP-63K" id="Q6f-Y3-DG4"/>
                         <outlet property="startButton" destination="9tl-cP-H8A" id="ejM-Jq-Tog"/>
                     </connections>
                 </viewController>
